@@ -4,7 +4,12 @@ autocmd!
 " Load plugins
 call plug#begin('~/.vim/plugged')
 
-Plug '/usr/local/opt/fzf'
+if isdirectory(expand('~/.fzf'))
+  Plug '~/.fzf'
+else
+  Plug '/usr/local/opt/fzf'
+endif
+
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'tpope/vim-endwise'
@@ -299,14 +304,15 @@ if executable('clangd')
         \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
         \ })
 endif
-" if executable('solargraph')
-"   au User lsp_setup call lsp#register_server({
-"     \ 'name': 'solargraph',
-"     \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
-"     \ 'initialization_options': {"diagnostics": "true"},
-"     \ 'whitelist': ['ruby'],
-"     \ })
-" endif
+
+if executable('solargraph')
+  au User lsp_setup call lsp#register_server({
+    \ 'name': 'solargraph',
+    \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
+    \ 'initialization_options': {"diagnostics": "true"},
+    \ 'whitelist': ['ruby'],
+    \ })
+endif
 
 """
 " janko/vim-test
