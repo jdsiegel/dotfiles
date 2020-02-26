@@ -4,7 +4,7 @@ autocmd!
 " Load plugins
 call plug#begin('~/.vim/plugged')
 
-Plug '~/.fzf'
+Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'tpope/vim-endwise'
@@ -29,7 +29,7 @@ Plug 'ludovicchabant/vim-gutentags'
 " Plug 'prabirshrestha/vim-lsp'
 " Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-Plug 'ycm-core/YouCompleteMe', { 'do': 'python3 install.py' }
+" Plug 'ycm-core/YouCompleteMe', { 'do': 'python3 install.py' }
 
 " Filetype plugins
 Plug 'vim-ruby/vim-ruby'
@@ -37,7 +37,7 @@ Plug 'tpope/vim-rails'
 Plug 'tpope/vim-bundler'
 Plug 'othree/html5.vim'
 Plug 'StanAngeloff/php.vim'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+" Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 
 call plug#end()
 
