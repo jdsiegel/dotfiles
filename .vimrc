@@ -21,13 +21,14 @@ Plug 'itchyny/lightline.vim'
 Plug 'maximbaz/lightline-ale'
 Plug 'janko/vim-test'
 Plug 'ludovicchabant/vim-gutentags'
+Plug 'easymotion/vim-easymotion'
 
-" Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete.vim'
 " Plug 'prabirshrestha/asyncomplete-buffer.vim'
 " Plug 'prabirshrestha/asyncomplete-file.vim'
-" Plug 'prabirshrestha/async.vim'
-" Plug 'prabirshrestha/vim-lsp'
-" Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
 " Plug 'ycm-core/YouCompleteMe', { 'do': 'python3 install.py' }
 
@@ -167,6 +168,7 @@ nnoremap <leader><leader> <c-^>
 """
 
 au FileType markdown,text set wrap linebreak textwidth=79 nolist
+au FileType cpp setlocal commentstring=//\ %s
 
 """
 " junegunn/fzf.vim
@@ -222,7 +224,7 @@ let g:ale_lint_delay = 0
 let g:ale_linters = {
       \   'html': ['htmlhint'],
       \   'python': [ 'flake8', 'pylint'],
-      \   'cpp': ['clangcheck', 'clangd']
+      \   'cpp': ['clangcheck']
       \}
 let g:ale_linters_ignore = {
       \   'ruby': ['rubocop']
@@ -286,8 +288,17 @@ let g:lightline.active = {
 " prabirshrestha/vim-lsp
 """
 
-" let g:lsp_diagnostics_enabled = 0         " disable diagnostics support. Let ALE do it
+let g:lsp_diagnostics_enabled = 0         " disable diagnostics support. Let ALE do it
+let g:lsp_log_file = expand('/tmp/vim-lsp.log')
 
+
+if executable('clangd')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'clangd',
+        \ 'cmd': {server_info->['clangd', '-background-index']},
+        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+        \ })
+endif
 " if executable('solargraph')
 "   au User lsp_setup call lsp#register_server({
 "     \ 'name': 'solargraph',
@@ -315,6 +326,7 @@ let g:mkdp_refresh_slow=1
 " ycm-core/YouCompleteMe
 """
 
+let g:ycm_show_diagnostics_ui = 0
 let g:ycm_clangd_binary_path = "/usr/bin/clangd"
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_language_server = [
@@ -324,3 +336,9 @@ let g:ycm_language_server = [
   \     'filetypes': [ 'ruby' ],
   \   }
   \ ]
+
+"""
+" easymotion/vim-easymotion.git
+"""
+
+map <space> <Plug>(easymotion-prefix)
