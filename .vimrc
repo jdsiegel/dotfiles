@@ -17,6 +17,7 @@ Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-dispatch'
 Plug 'scrooloose/nerdtree'
 Plug 'Yggdroot/indentLine'
 Plug 'mhinz/vim-signify'
@@ -27,6 +28,8 @@ Plug 'maximbaz/lightline-ale'
 Plug 'janko/vim-test'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'easymotion/vim-easymotion'
+Plug 'vhdirk/vim-cmake'
+Plug 'junegunn/gv.vim'
 
 Plug 'prabirshrestha/asyncomplete.vim'
 " Plug 'prabirshrestha/asyncomplete-buffer.vim'
@@ -229,7 +232,7 @@ let g:ale_lint_delay = 0
 let g:ale_linters = {
       \   'html': ['htmlhint'],
       \   'python': [ 'flake8', 'pylint'],
-      \   'cpp': ['clangcheck']
+      \   'cpp': ['clangcheck', 'clangd']
       \}
 let g:ale_linters_ignore = {
       \   'ruby': ['rubocop']
