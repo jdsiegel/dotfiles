@@ -15,36 +15,35 @@ Plug 'junegunn/goyo.vim'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-fugitive'
+Plug 'junegunn/gv.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'Yggdroot/indentLine'
 Plug 'mhinz/vim-signify'
 Plug 'mhinz/vim-grepper'
-Plug 'dense-analysis/ale'
 Plug 'itchyny/lightline.vim'
-Plug 'maximbaz/lightline-ale'
 Plug 'janko/vim-test'
-Plug 'ludovicchabant/vim-gutentags'
 Plug 'easymotion/vim-easymotion'
-Plug 'vhdirk/vim-cmake'
-Plug 'junegunn/gv.vim'
+Plug 'tomasiser/vim-code-dark'
+" Plug 'ludovicchabant/vim-gutentags'
+" Plug 'dense-analysis/ale'
+" Plug 'maximbaz/lightline-ale'
+" Plug 'preservim/vim-indent-guides'
 
-Plug 'prabirshrestha/asyncomplete.vim'
-" Plug 'prabirshrestha/asyncomplete-buffer.vim'
-" Plug 'prabirshrestha/asyncomplete-file.vim'
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" Plug 'kana/vim-textobj-user'
+" Plug 'nelstrom/vim-textobj-rubyblock'
 
-" Plug 'ycm-core/YouCompleteMe', { 'do': 'python3 install.py' }
+" Language Server
+
+Plug 'yegappan/lsp'
 
 " Filetype plugins
-Plug 'vim-ruby/vim-ruby'
-Plug 'tpope/vim-rails'
-Plug 'tpope/vim-bundler'
-Plug 'othree/html5.vim'
+
+" Plug 'vim-ruby/vim-ruby'
+" Plug 'tpope/vim-rails'
+" Plug 'tpope/vim-bundler'
+" Plug 'othree/html5.vim'
 Plug 'StanAngeloff/php.vim'
 " Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 
@@ -55,15 +54,17 @@ let $BASH_ENV = "~/.bash_aliases"
 
 set nocompatible      " Use vim, no vi defaults
 
-set t_Co=256
-set background=dark
-color jellybeans
+" set t_Co=256
+" set background=dark
+" color jellybeans
+color codedark
 
 syntax enable         " Turn on syntax highlighting allowing local overrides
 set number            " Show line numbers
 set ruler             " Show line and column number
 set encoding=utf-8    " Set default encoding to UTF-8
 set ttyfast
+set cursorline
 
 set nowrap                        " don't wrap lines
 set tabstop=2                     " a tab is two spaces
@@ -211,11 +212,11 @@ nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
 nnoremap <leader>fg :Grepper -tool git<cr>
-nnoremap <leader>fa :Grepper -tool ag<cr>
-nnoremap <leader>fs :Grepper -tool ag -side<cr>
+nnoremap <leader>fa :Grepper -tool rg<cr>
+nnoremap <leader>fs :Grepper -tool rg -side<cr>
 
 let g:grepper = {}
-let g:grepper.tools = ['ag', 'git', 'grep']
+let g:grepper.tools = ['rg', 'git', 'grep']
 let g:grepper.prompt_mapping_tool = '<leader>fa'
 
 """
@@ -232,7 +233,7 @@ let g:ale_lint_delay = 0
 let g:ale_linters = {
       \   'html': ['htmlhint'],
       \   'python': [ 'flake8', 'pylint'],
-      \   'cpp': ['clangcheck', 'clangd']
+      \   'cpp': ['clangcheck']
       \}
 let g:ale_linters_ignore = {
       \   'ruby': ['rubocop']
@@ -245,8 +246,12 @@ let g:ale_set_balloons = 1
 " maximbaz/lightline-ale
 """
 
+function ShowSyntaxElement()
+  return synIDattr(synID(line("."), col("."), 1), "name")
+endfunction
+
 let g:lightline = {
-    \ 'colorscheme': 'jellybeans',
+    \ 'colorscheme': 'codedark',
     \ }
 let g:lightline.component_function = {
     \ 'gitbranch': 'fugitive#head'
@@ -264,7 +269,7 @@ let g:lightline.component_type = {
     \     'linter_ok': 'left',
     \ }
 let g:lightline.active = {
-    \ 'left': [ [ 'mode', 'paste' ], [ 'gitbranch' ],
+    \ 'left': [ [ 'mode', 'paste' ], [ 'gitbranch', 'syntax_element' ],
     \           [ 'readonly', 'relativepath', 'modified' ] ],
     \ 'right': [ [ 'lineinfo' ], [ 'percent' ],
     \            [ 'fileencoding', 'filetype' ],
@@ -272,49 +277,66 @@ let g:lightline.active = {
     \ }
 
 """
-" prabirshrestha/asyncomplete.vim
+" yegappan/lsp
 """
 
-" call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-"     \ 'name': 'buffer',
-"     \ 'whitelist': ['*'],
-"     \ 'blacklist': ['go'],
-"     \ 'completor': function('asyncomplete#sources#buffer#completor'),
-"     \ 'config': {
-"     \    'max_buffer_size': 5000000,
-"     \  },
-"     \ }))
-
-" call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-"     \ 'name': 'file',
-"     \ 'whitelist': ['*'],
-"     \ 'priority': 10,
-"     \ 'completor': function('asyncomplete#sources#file#completor')
-"     \ }))
-
-"""
-" prabirshrestha/vim-lsp
-"""
-
-let g:lsp_diagnostics_enabled = 0         " disable diagnostics support. Let ALE do it
-let g:lsp_log_file = expand('/tmp/vim-lsp.log')
-
+nmap gd :LspGotoDefinition<CR>
+nmap gD :LspGotoDeclaration<CR>
+nmap gr :LspPeekReferences<CR>
+nmap gR :LspShowReferences<CR>
+nmap K :LspHover<CR>
+nmap <leader>k :LspDiagCurrent<CR>
 
 if executable('clangd')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'clangd',
-        \ 'cmd': {server_info->['clangd', '-background-index']},
-        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-        \ })
+  let lspOpts = #{
+    \   autoHighlightDiags: v:true,
+    \   semanticHighlight: v:false
+    \ }
+  autocmd User LspSetup call LspOptionsSet(lspOpts)
+
+  let lspServers = [#{
+    \	  name: 'clang',
+    \	  filetype: ['c', 'cpp'],
+    \	  path: '/usr/local/opt/llvm/bin/clangd',
+    \	  args: ['--background-index']
+    \ }]
+  autocmd User LspSetup call LspAddServer(lspServers)
+
+
+  call hlset([
+    \  #{name: 'LspSemanticNamespace', default: v:true, linksto: 'LspCxxHlSymNamespace'},
+    \  #{name: 'LspSemanticType', default: v:true, linksto: 'Type'},
+    \  #{name: 'LspSemanticClass', default: v:true, linksto: 'LspCxxHlSymClass'},
+    \  #{name: 'LspSemanticEnum', default: v:true, linksto: 'LspCxxHlSymEnum'},
+    \  #{name: 'LspSemanticInterface', default: v:true, linksto: 'TypeDef'},
+    \  #{name: 'LspSemanticStruct', default: v:true, linksto: 'LspCxxHlSymStruct'},
+    \  #{name: 'LspSemanticTypeParameter', default: v:true, linksto: 'LspCxxHlSymTypeParameter'},
+    \  #{name: 'LspSemanticParameter', default: v:true, linksto: 'Identifier'},
+    \  #{name: 'LspSemanticVariable', default: v:true, linksto: 'Identifier'},
+    \  #{name: 'LspSemanticProperty', default: v:true, linksto: 'Identifier'},
+    \  #{name: 'LspSemanticEnumMember', default: v:true, linksto: 'Constant'},
+    \  #{name: 'LspSemanticEvent', default: v:true, linksto: 'Identifier'},
+    \  #{name: 'LspSemanticFunction', default: v:true, linksto: 'Function'},
+    \  #{name: 'LspSemanticMethod', default: v:true, linksto: 'Function'},
+    \  #{name: 'LspSemanticMacro', default: v:true, linksto: 'Macro'},
+    \  #{name: 'LspSemanticKeyword', default: v:true, linksto: 'Keyword'},
+    \  #{name: 'LspSemanticModifier', default: v:true, linksto: 'Type'},
+    \  #{name: 'LspSemanticComment', default: v:true, linksto: 'Comment'},
+    \  #{name: 'LspSemanticString', default: v:true, linksto: 'String'},
+    \  #{name: 'LspSemanticNumber', default: v:true, linksto: 'Number'},
+    \  #{name: 'LspSemanticRegexp', default: v:true, linksto: 'String'},
+    \  #{name: 'LspSemanticOperator', default: v:true, linksto: 'Operator'},
+    \  #{name: 'LspSemanticDecorator', default: v:true, linksto: 'Macro'}
+    \ ])
 endif
 
 if executable('solargraph')
-  au User lsp_setup call lsp#register_server({
-    \ 'name': 'solargraph',
-    \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
-    \ 'initialization_options': {"diagnostics": "true"},
-    \ 'whitelist': ['ruby'],
-    \ })
+  " au User lsp_setup call lsp#register_server({
+  "   \ 'name': 'solargraph',
+  "   \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
+  "   \ 'initialization_options': {"diagnostics": "true"},
+  "   \ 'whitelist': ['ruby'],
+  "   \ })
 endif
 
 """
@@ -330,21 +352,6 @@ nmap <leader>a :TestSuite<CR>
 """
 
 let g:mkdp_refresh_slow=1
-
-"""
-" ycm-core/YouCompleteMe
-"""
-
-let g:ycm_show_diagnostics_ui = 0
-let g:ycm_clangd_binary_path = "/usr/bin/clangd"
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_language_server = [
-  \   {
-  \     'name': 'ruby',
-  \     'cmdline': [ expand( 'solargraph' ), 'stdio' ],
-  \     'filetypes': [ 'ruby' ],
-  \   }
-  \ ]
 
 """
 " easymotion/vim-easymotion.git
