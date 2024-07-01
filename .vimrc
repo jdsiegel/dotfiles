@@ -54,10 +54,14 @@ let $BASH_ENV = "~/.bash_aliases"
 
 set nocompatible      " Use vim, no vi defaults
 
-" set t_Co=256
+set t_Co=256
 " set background=dark
 " color jellybeans
 color codedark
+
+if has('gui_running')
+  set guifont=Consolas:h12
+endif
 
 syntax enable         " Turn on syntax highlighting allowing local overrides
 set number            " Show line numbers
@@ -72,7 +76,7 @@ set shiftwidth=2                  " an autoindent (with <<) is two spaces
 set expandtab                     " use spaces, not tabs
 set list                          " Show invisible characters
 set backspace=indent,eol,start    " backspace through everything in insert mode
-set shell=bash
+" set shell=bash
 set nojoinspaces
 set re=1                          " Use v1 regex engine for faster Ruby syntax highlighting
 set splitbelow
@@ -290,14 +294,14 @@ nmap <leader>k :LspDiagCurrent<CR>
 if executable('clangd')
   let lspOpts = #{
     \   autoHighlightDiags: v:true,
-    \   semanticHighlight: v:false
+    \   semanticHighlight: v:true
     \ }
   autocmd User LspSetup call LspOptionsSet(lspOpts)
 
   let lspServers = [#{
     \	  name: 'clang',
     \	  filetype: ['c', 'cpp'],
-    \	  path: '/usr/local/opt/llvm/bin/clangd',
+    \	  path: 'clangd',
     \	  args: ['--background-index']
     \ }]
   autocmd User LspSetup call LspAddServer(lspServers)
